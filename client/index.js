@@ -1,0 +1,27 @@
+import { config } from 'dotenv';
+import readline from 'readline/promises';
+import { GoogleGenAI } from '@google/genai';
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+
+config();
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_API_KEY,
+  model: '',
+});
+
+const mcpClient = new Client({
+  name: 'example-client',
+  version: '1.0.0',
+  // transport : new SSEClientTransport({
+  //     url : 'http://localhost:3000/mcp',
+  // })
+});
+const chatHistory = [];
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+mcpClient.connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')));
