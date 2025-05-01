@@ -14,9 +14,6 @@ const ai = new GoogleGenAI({
 const mcpClient = new Client({
   name: 'example-client',
   version: '1.0.0',
-  // transport : new SSEClientTransport({
-  //     url : 'http://localhost:3000/mcp',
-  // })
 });
 const chatHistory = [];
 const rl = readline.createInterface({
@@ -24,4 +21,7 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-mcpClient.connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')));
+mcpClient.connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')))
+.then(async () => {
+
+})
