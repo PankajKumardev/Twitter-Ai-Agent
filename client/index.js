@@ -21,7 +21,10 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-mcpClient.connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')))
-.then(async () => {
-
-})
+mcpClient
+  .connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')))
+  .then(async () => {
+    console.log('Connected to Model Context Protocol server.');
+    const tools = (await mcpClient.listTools()).tools;
+    console.log('Available tools:', tools);
+  });
