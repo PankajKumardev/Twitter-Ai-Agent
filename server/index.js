@@ -1,15 +1,18 @@
 import express from 'express';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import { createPost } from './twitterTool.js';
+import { getUserTimeline } from './twitterTool.js';
+import { getUserFollowers } from './twitterTool.js';
+import { getUserFollowing } from './twitterTool.js';
 
 const app = express();
 app.use(express.json());
 
 const server = new McpServer({
-  name: "example-server",
-  version: "1.0.0"
+  name: 'example-server',
+  version: '1.0.0',
 });
 
 function sanitizeToolName(name) {
@@ -19,26 +22,77 @@ function sanitizeToolName(name) {
   }
   if (sanitizedName.length > 64) {
     sanitizedName = sanitizedName.substring(0, 64);
-  } 
+  }
   return sanitizedName;
 }
 
+// server.tool(
+//   sanitizeToolName('add two numbers'),
+//   'Adds two numbers together',
+//   {
+//     a: z.number(),
+//     b: z.number(),
+//   },
+//   async ({ a, b }) => {
+//     return {
+//       content: [
+//         {
+//           type: 'text',
+//           text: `The sum of ${a} and ${b} is ${a + b}`,
+//         },
+//       ],
+//     };
+//   }
+// );
+
 server.tool(
-  sanitizeToolName("add two numbers"),
-  "Adds two numbers together",
+  'createPost',
+  'Create a post on Twitter',
   {
-    a: z.number(),
-    b: z.number(),
+    status: z.string(),
   },
-  async( { a, b }) => {
-  return {
-    content : [{
-      type: "text",
-      text: `The sum of ${a} and ${b} is ${a + b}`,
-    }],
+  async ({ arg }) => {
+    const { status } = arg;
+    return createPost(status);
   }
+);
+
+server.tool(
+  'getUserTimeline',
+  'Get user timeline',
+  {
+    username: z.string(),
+  },
+  async ({ arg }) => {
+    const { username } = arg;
+    return getUserTimeline(username);
   }
-)
+);
+
+server.tool(
+  'getUserFollowers',
+  'Get user followers',
+  {
+    username: z.string(),
+  },
+  async ({ arg }) => {
+    const { username } = arg;
+    return getUserFollowers(username);
+  }
+);
+
+server.tool(
+  'getUserFollowing',
+  'Get user following',
+  {
+    username: z.string(),
+  },
+  async ({ arg }) => {
+    const { username } = arg;
+    return getUserFollowing(username);
+  }
+);
+
 app.post('/mcp', async (req, res) => {
   // In stateless mode, create a new instance of transport and server for each request
   // to ensure complete isolation. A single instance would cause request ID collisions

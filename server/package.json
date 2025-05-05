@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "twitter-api-v2": "^1.22.0",
     "zod": "^3.24.3"
