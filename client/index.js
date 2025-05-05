@@ -10,7 +10,6 @@ let tools = [];
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY,
-  model: '',
 });
 
 const mcpClient = new Client({
@@ -42,3 +41,34 @@ mcpClient
       };
     });
   });
+
+async function chatLoop(toolCall) {
+  if (toolCall) {
+    console.log('calling tool:', toolCall.name);
+
+    chatHistory.push({
+      role: 'model',
+      parts: [
+        {
+          text: `calling tool: ${toolCall.name}`,
+          type: 'text',
+        },
+      ],
+    });
+
+    const toolResult = await mcpClient.callTool({
+      name: toolCall.name,
+      arguments: toolCall.args,
+    });
+
+    chatHistory.push({
+      role: 'user',
+      parts: [
+        {
+          text: 'Tool result : ' + toolResult.content[0].text,
+          type: 'text',
+        },
+      ],
+    });
+  }
+}
