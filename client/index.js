@@ -3,6 +3,7 @@ import readline from 'readline/promises';
 import { GoogleGenAI } from '@google/genai';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+import { text } from 'stream/consumers';
 
 config();
 
@@ -70,5 +71,28 @@ async function chatLoop(toolCall) {
         },
       ],
     });
+  } else {
+    const question = await rl.question('You: ');
+    chatHistory.push({
+      role: 'user',
+      parts: [
+        {
+          text: question,
+          type: 'text',
+        },
+      ],
+    });
   }
 }
+
+const response = await ai.models.generateContent({
+  model: 'gemini-2.0-flash',
+  contents: chatHistory,
+  config: {
+    tools: [
+      {
+        functionDeclarations: tools,
+      },
+    ],
+  },
+});
