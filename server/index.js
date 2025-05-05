@@ -3,9 +3,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { z } from 'zod';
 import { createPost } from './twitterTool.js';
-import { getUserTimeline } from './twitterTool.js';
-import { getUserFollowers } from './twitterTool.js';
-import { getUserFollowing } from './twitterTool.js';
+
 
 const app = express();
 // app.use(express.json());
@@ -44,7 +42,6 @@ const server = new McpServer({
 //     };
 //   }
 // );
-
 server.tool(
   'createPost',
   'Create a post on X formally known as Twitter',
@@ -58,40 +55,46 @@ server.tool(
 );
 
 server.tool(
-  'getUserTimeline',
-  'Get user timeline',
+  'createFunnyPost',
+  'Create a funny post on X with the given topic',
   {
-    username: z.string(),
+    topic: z.string().describe('The topic to create a funny post about'),
   },
-  async ( arg ) => {
-    const { username } = arg;
-    return getUserTimeline(username);
+  async (arg) => {
+    const { topic } = arg;
+    const status = `😂 Just thinking about ${topic} and can't stop laughing! Anyone else feel this way? #Humor #${topic.replace(/\s+/g, '')}`;
+    return createPost(status);
   }
 );
 
 server.tool(
-  'getUserFollowers',
-  'Get user followers',
+  'createMotivationalPost',
+  'Create a motivational post on X with the given topic',
   {
-    username: z.string(),
+    topic: z.string().describe('The topic to create a motivational post about'),
   },
-  async ( arg ) => {
-    const { username } = arg;
-    return getUserFollowers(username);
+  async (arg) => {
+    const { topic } = arg;
+    const status = `✨ Every challenge with ${topic} is just an opportunity in disguise. Keep pushing forward! #Motivation #${topic.replace(/\s+/g, '')}`;
+    return createPost(status);
   }
 );
 
 server.tool(
-  'getUserFollowing',
-  'Get user following',
+  "createSarcasticPost",
+  "Create a sarcastic post on X with the given topic",
+  
   {
-    username: z.string(),
+    topic: z.string().describe("The topic to create a sarcastic post about"),
   },
-  async (arg ) => {
-    const { username } = arg;
-    return getUserFollowing(username);
+  async (arg) => {
+    const { topic } = arg;
+    const status = `Oh sure, because ${topic} is just the best thing ever. Can't get enough of it! #Sarcasm #${topic.replace(/\s+/g, '')}`;
+    return createPost(status);
   }
 );
+
+
 
 app.post('/mcp', async (req, res) => {
   // In stateless mode, create a new instance of transport and server for each request
