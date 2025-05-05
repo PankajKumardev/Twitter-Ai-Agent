@@ -12,36 +12,6 @@ const server = new McpServer({
   name: 'example-server',
   version: '1.0.0',
 });
-
-// function sanitizeToolName(name) {
-//   let sanitizedName = name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-//   if (!/^[a-zA-Z_]/.test(sanitizedName)) {
-//     sanitizedName = '_' + sanitizedName;
-//   }
-//   if (sanitizedName.length > 64) {
-//     sanitizedName = sanitizedName.substring(0, 64);
-//   }
-//   return sanitizedName;
-// }
-
-// server.tool(
-//   sanitizeToolName('add two numbers'),
-//   'Adds two numbers together',
-//   {
-//     a: z.number(),
-//     b: z.number(),
-//   },
-//   async ({ a, b }) => {
-//     return {
-//       content: [
-//         {
-//           type: 'text',
-//           text: `The sum of ${a} and ${b} is ${a + b}`,
-//         },
-//       ],
-//     };
-//   }
-// );
 server.tool(
   'createPost',
   'Create a post on X formally known as Twitter',
