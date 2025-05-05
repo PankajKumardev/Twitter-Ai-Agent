@@ -6,6 +6,8 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 
 config();
 
+let tools = [];
+
 const ai = new GoogleGenAI({
   apiKey: process.env.GOOGLE_API_KEY,
   model: '',
@@ -22,11 +24,21 @@ const rl = readline.createInterface({
 });
 
 mcpClient
-  .connect(new StreamableHTTPClientTransport(new URL('http://localhost:3001/mcp')))
+  .connect(
+    new StreamableHTTPClientTransport(new URL('http://localhost:3001/mcp'))
+  )
   .then(async () => {
-    console.log('Connected to Model Context Protocol server.');
-    const tools = (await mcpClient.listTools()).tools;
-    console.log('Available tools:', tools);
-  });
+    console.log('connected to mcp server');
 
-  
+    tools = (await mcpClient.listTools()).tools.map((tool) => {
+      return {
+        name: tool.name,
+        description: tool.description,
+        parameters: {
+          type: tool.inputSchema.type,
+          properties: tool.inputSchema.properties,
+          required: tool.inputSchema.required,
+        },
+      };
+    });
+  });
