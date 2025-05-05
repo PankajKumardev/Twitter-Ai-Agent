@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import readline from 'readline/promises';
 import { GoogleGenAI } from '@google/genai';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { SSEClientTransport } from '@modelcontextprotocol/sdk/client/sse.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 
 config();
 
@@ -22,9 +22,11 @@ const rl = readline.createInterface({
 });
 
 mcpClient
-  .connect(new SSEClientTransport(new URL('http://localhost:3001/mcp')))
+  .connect(new StreamableHTTPClientTransport(new URL('http://localhost:3001/mcp')))
   .then(async () => {
     console.log('Connected to Model Context Protocol server.');
     const tools = (await mcpClient.listTools()).tools;
     console.log('Available tools:', tools);
   });
+
+  

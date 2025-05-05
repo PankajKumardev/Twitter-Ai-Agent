@@ -34,7 +34,7 @@ app.post('/mcp', async (req, res) => {
   // when multiple clients connect concurrently.
 
   try {
-    const server = getServer();
+    // Use the existing server instance instead of getServer()
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined,
     });
