@@ -3,7 +3,6 @@ import readline from 'readline/promises';
 import { GoogleGenAI } from '@google/genai';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import { text } from 'stream/consumers';
 
 config();
 
@@ -31,8 +30,17 @@ mcpClient
     console.log('connected to mcp server');
 
     tools = (await mcpClient.listTools()).tools.map((tool) => {
+      // Sanitize tool name to conform to Google GenAI function name rules
+      let sanitizedName = tool.name
+        .replace(/[^a-zA-Z0-9_.-]/g, '_'); // replace invalid chars with underscore
+      if (!/^[a-zA-Z_]/.test(sanitizedName)) {
+        sanitizedName = '_' + sanitizedName; // prepend underscore if first char invalid
+      }
+      // if (sanitizedName.length > 64) {
+      //   sanitizedName = sanitizedName.substring(0, 64); // truncate to 64 chars
+      // }
       return {
-        name: tool.name,
+        name: sanitizedName,
         description: tool.description,
         parameters: {
           type: tool.inputSchema.type,
@@ -41,6 +49,9 @@ mcpClient
         },
       };
     });
+
+    // Start the chat loop after connection and tools are ready
+    chatLoop();
   });
 
 async function chatLoop(toolCall) {
