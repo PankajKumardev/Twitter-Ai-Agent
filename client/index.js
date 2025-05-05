@@ -83,16 +83,37 @@ async function chatLoop(toolCall) {
       ],
     });
   }
-}
 
-const response = await ai.models.generateContent({
-  model: 'gemini-2.0-flash',
-  contents: chatHistory,
-  config: {
-    tools: [
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.0-flash',
+    contents: chatHistory,
+    config: {
+      tools: [
+        {
+          functionDeclarations: tools,
+        },
+      ],
+    },
+  });
+
+  const functionCall = response.candidates[0].content.parts[0].functionCall;
+  const responseText = response.candidates[0].content.parts[0].text;
+
+  if (functionCall) {
+    return chatLoop(functionCall);
+  }
+
+  chatHistory.push({
+    role: 'model',
+    parts: [
       {
-        functionDeclarations: tools,
+        text: responseText,
+        type: 'text',
       },
     ],
-  },
-});
+  });
+
+  console.log(`AI: ${responseText}`);
+
+  chatLoop();
+}
