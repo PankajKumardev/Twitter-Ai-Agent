@@ -8,23 +8,23 @@ import { getUserFollowers } from './twitterTool.js';
 import { getUserFollowing } from './twitterTool.js';
 
 const app = express();
-app.use(express.json());
+// app.use(express.json());
 
 const server = new McpServer({
   name: 'example-server',
   version: '1.0.0',
 });
 
-function sanitizeToolName(name) {
-  let sanitizedName = name.replace(/[^a-zA-Z0-9_.-]/g, '_');
-  if (!/^[a-zA-Z_]/.test(sanitizedName)) {
-    sanitizedName = '_' + sanitizedName;
-  }
-  if (sanitizedName.length > 64) {
-    sanitizedName = sanitizedName.substring(0, 64);
-  }
-  return sanitizedName;
-}
+// function sanitizeToolName(name) {
+//   let sanitizedName = name.replace(/[^a-zA-Z0-9_.-]/g, '_');
+//   if (!/^[a-zA-Z_]/.test(sanitizedName)) {
+//     sanitizedName = '_' + sanitizedName;
+//   }
+//   if (sanitizedName.length > 64) {
+//     sanitizedName = sanitizedName.substring(0, 64);
+//   }
+//   return sanitizedName;
+// }
 
 // server.tool(
 //   sanitizeToolName('add two numbers'),
@@ -47,11 +47,11 @@ function sanitizeToolName(name) {
 
 server.tool(
   'createPost',
-  'Create a post on Twitter',
+  'Create a post on X formally known as Twitter',
   {
     status: z.string(),
   },
-  async ({ arg }) => {
+  async (arg) => {
     const { status } = arg;
     return createPost(status);
   }
@@ -63,7 +63,7 @@ server.tool(
   {
     username: z.string(),
   },
-  async ({ arg }) => {
+  async ( arg ) => {
     const { username } = arg;
     return getUserTimeline(username);
   }
@@ -75,7 +75,7 @@ server.tool(
   {
     username: z.string(),
   },
-  async ({ arg }) => {
+  async ( arg ) => {
     const { username } = arg;
     return getUserFollowers(username);
   }
@@ -87,7 +87,7 @@ server.tool(
   {
     username: z.string(),
   },
-  async ({ arg }) => {
+  async (arg ) => {
     const { username } = arg;
     return getUserFollowing(username);
   }

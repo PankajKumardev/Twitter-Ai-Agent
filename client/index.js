@@ -31,16 +31,16 @@ mcpClient
 
     tools = (await mcpClient.listTools()).tools.map((tool) => {
       // Sanitize tool name to conform to Google GenAI function name rules
-      let sanitizedName = tool.name
-        .replace(/[^a-zA-Z0-9_.-]/g, '_'); // replace invalid chars with underscore
-      if (!/^[a-zA-Z_]/.test(sanitizedName)) {
-        sanitizedName = '_' + sanitizedName; // prepend underscore if first char invalid
-      }
+      // let sanitizedName = tool.name
+      //   .replace(/[^a-zA-Z0-9_.-]/g, '_'); // replace invalid chars with underscore
+      // if (!/^[a-zA-Z_]/.test(sanitizedName)) {
+      //   sanitizedName = '_' + sanitizedName; // prepend underscore if first char invalid
+      // }
       // if (sanitizedName.length > 64) {
       //   sanitizedName = sanitizedName.substring(0, 64); // truncate to 64 chars
       // }
       return {
-        name: sanitizedName,
+        name: tool.name,
         description: tool.description,
         parameters: {
           type: tool.inputSchema.type,
