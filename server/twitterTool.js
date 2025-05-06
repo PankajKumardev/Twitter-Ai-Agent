@@ -23,3 +23,49 @@ export async function createPost(status) {
   };
 }
 
+export async function getUserTimeline(userId) { 
+  const timeline = await twitterClient.v2.userTimeline(userId, {
+    max_results: 5,
+    exclude: 'replies',
+  });
+
+  return timeline.data.map((tweet) => ({
+    content: [
+      {
+        type: 'text',
+        text: `Tweeted: ${tweet.text}`,
+      },
+    ],
+  }));
+}
+
+export async function getFollowers(userId) {
+  const followers = await twitterClient.v2.followers(userId, {
+    max_results: 5,
+  });
+
+  return followers.data.map((follower) => ({
+    content: [
+      {
+        type: 'text',
+        text: `Follower: ${follower.username}`,
+      },
+    ],
+  }));
+}
+
+export async function getFollowing(userId) {
+  const following = await twitterClient.v2.following(userId, {
+    max_results: 5,
+  });
+
+  return following.data.map((followedUser) => ({
+    content: [
+      {
+        type: 'text',
+        text: `Following: ${followedUser.username}`,
+      },
+    ],
+  }));
+}
+
