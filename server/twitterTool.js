@@ -23,6 +23,10 @@ export async function createPost(status) {
   };
 }
 
+
+// Note: This code hasn't been fully tested due to Twitter API access limitations.
+// Additional error handling may be needed with a production Twitter developer account.
+
 export async function getUserTimeline(userId) {
   const timeline = await twitterClient.v2.userTimeline(userId, {
     max_results: 5,
