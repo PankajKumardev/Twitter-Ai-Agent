@@ -23,7 +23,7 @@ export async function createPost(status) {
   };
 }
 
-export async function getUserTimeline(userId) { 
+export async function getUserTimeline(userId) {
   const timeline = await twitterClient.v2.userTimeline(userId, {
     max_results: 5,
     exclude: 'replies',
@@ -69,3 +69,16 @@ export async function getFollowing(userId) {
   }));
 }
 
+export async function getSearchResult(username) {
+  const foundUsers = await twitterClient.v2.usersByUsername(username, {
+    max_results: 5,
+  });
+  return foundUsers.data.map((user) => ({
+    content: [
+      {
+        type: 'text',
+        text: `User: ${user.username}`,
+      },
+    ],
+  }));
+}
